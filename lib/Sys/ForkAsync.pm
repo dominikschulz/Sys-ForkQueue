@@ -16,28 +16,60 @@ use namespace::autoclean;
 use Errno qw(EAGAIN);
 use POSIX qw(WNOHANG);
 
+=attr chdir
+
+Change to this directory after the fork.
+
+=cut
 has 'chdir' => (
     'is'      => 'rw',
     'isa'     => 'Str',
     'default' => 0,
 );
 
+=attr redirect_output
+
+If set to true the output of the child will
+be redirected to /dev/null.
+
+=cut
 has 'redirect_output' => (
     'is'      => 'rw',
     'isa'     => 'Bool',
     'default' => 1,
 );
 
+=attr close_fhs
+
+Close all open filehandles after the fork
+to prevent unsynchronized file I/O
+
+=cut
 has 'close_fhs' => (
     'is'      => 'rw',
     'isa'     => 'Bool',
     'default' => 1,
 );
 
+=attr setsid
+
+Create its own process group.
+
+=cut
 has 'setsid' => (
     'is'      => 'rw',
     'isa'     => 'Bool',
     'default' => 0,
+);
+
+=attr name
+
+Set the process name to this string, if set.
+
+=cut
+has 'name' => (
+    'is'    => 'ro',
+    'isa'   => 'Str',
 );
 
 sub dispatch {
@@ -96,6 +128,8 @@ sub dispatch {
             my $pid  = $$;
             ## use critic
             my $ppid = getppid();
+            
+            $0 = $self->name() if $self->name();
 
             my $t0     = time();                                  # starttime
             my $status = &{$code_ref}( 'ForkAsync', $arg_ref );
@@ -147,13 +181,11 @@ Sys::ForkAsync - Run async commands
 
 Run a system command asynchronous.
 
-=head1 SUBROUTINES/METHODS
-
-=head2 dispatch
+=method dispatch
 
 Run the command in its own fork.
 
-=head2 EAGAIN
+=method EAGAIN
 
 Imported from Errno.
 
