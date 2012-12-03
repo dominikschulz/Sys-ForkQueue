@@ -128,7 +128,7 @@ sub dispatch {
             my $pid  = $$;
             ## use critic
             my $ppid = getppid();
-            
+
             $0 = $self->name() if $self->name();
 
             my $t0     = time();                                  # starttime
