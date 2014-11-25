@@ -252,7 +252,7 @@ sub run {
                     my $status = &{ $self->code() }( $job, $self->args() );
                     my $d0     = time() - $t0;                                # duration
                     if ($status) {
-                        $self->logger->log( message => 'Fork finished with SUCCESS after running for ' . $d0 . 's.', level => 'debug', );
+                        $self->logger->log( message => 'Fork finished with SUCCESS ('.$status.') after running for ' . $d0 . 's.', level => 'debug', );
                         exit 0;
                     }
                     else {
